@@ -45,10 +45,10 @@ void init_() {
   pinMode(LATCH_DIO, OUTPUT);
   pinMode(CLK_DIO, OUTPUT);
   pinMode(DATA_DIO, OUTPUT);
-  
+
   button_listen(A1);
   button_listen(A2);
-  
+
   timer_set(500);
 }
 
@@ -62,7 +62,10 @@ void timer_expired() {
   } else {
     printNumber(9999);
   }
-  
+
+  button1On = 0;
+  button2On = 0;
+
   timer_set(1000/speed);
 }
 
