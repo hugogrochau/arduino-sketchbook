@@ -6,7 +6,7 @@ A device that controls how many people can enter a room. It will log every indiv
 # Requirements
 * 1x 7-seg display
 * 1x buzzer
-* 1x PIR Motion Sensor
+* 2x PIR Motion Sensors
 
 # Possible challenges:
 * Detecting multiple people coming in at the same time
