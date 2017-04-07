@@ -17,11 +17,6 @@ const int addButton = 3;
 const int subButton = 5;
 const int confirmButton = 6;
 
-// Musical notes
-const int cNote = 261;
-const int aNote = 440;
-const int gSharpNote = 415;
-
 state currentState = initial;
 int maxOccupants = 0;
 

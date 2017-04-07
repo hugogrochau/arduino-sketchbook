@@ -1,21 +1,22 @@
 #include "state.h"
 #include "initial_state.h"
+#include "notes.h"
 
 void initialStateButtonChanged(int pin, int value) {
   if (value == HIGH) {
     switch (pin) {
       case addButton:
-        tone(beeperPin, aNote);
+        tone(beeperPin, NOTE_A);
         maxOccupants++;
         break;
       case subButton:
         if (maxOccupants > 0) {
-          tone(beeperPin, gSharpNote);
+          tone(beeperPin, NOTE_G_SHARP);
           maxOccupants--;
         }
         break;
       case confirmButton:
-        tone(beeperPin, cNote);
+        tone(beeperPin, NOTE_C);
         delay(500);
         currentState = counting;
         noTone(beeperPin);
