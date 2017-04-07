@@ -8,14 +8,17 @@ void initialStateButtonChanged(int pin, int value) {
       case addButton:
         tone(beeperPin, NOTE_A);
         maxOccupants++;
+        printMaxOccupants();
         break;
       case subButton:
         if (maxOccupants > 0) {
           tone(beeperPin, NOTE_G_SHARP);
           maxOccupants--;
+          printMaxOccupants();
         }
         break;
       case confirmButton:
+        Serial.println("Controlling occupants...");
         tone(beeperPin, NOTE_C);
         delay(500);
         currentState = counting;
@@ -29,9 +32,13 @@ void initialStateButtonChanged(int pin, int value) {
 
 void initialStateLoop() {
   if (maxOccupants == 0) {
-    Serial.println("Enter max occupants");
   } else {
-    Serial.print("Max occupants: ");
-    Serial.println(maxOccupants);
+
   }
 }
+
+void printMaxOccupants() {
+  Serial.print("Max occupants: ");
+  Serial.println(maxOccupants);
+}
+
