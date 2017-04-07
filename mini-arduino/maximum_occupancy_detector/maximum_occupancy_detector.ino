@@ -1,7 +1,10 @@
+#include "state.h"
 #include "distance.h"
 #include "event_driven.h"
+#include "initial_state.h"
+#include "counting_state.h"
+#include "past_limit_state.h"
 
-// defines pins numbers
 const int trigPin1 = 12;
 const int echoPin1 = 11;
 
@@ -14,15 +17,10 @@ const int addButton = 3;
 const int subButton = 5;
 const int confirmButton = 6;
 
-const int cSharp = 277;
-const int fSharp = 370;
-const int gSharp = 415;
-
-enum state {
-  initial,
-  counting,
-  pastLimit
-};
+// Musical notes
+const int cNote = 261;
+const int aNote = 440;
+const int gSharpNote = 415;
 
 state currentState = initial;
 int maxOccupants = 0;
@@ -46,58 +44,32 @@ void setup_() {
 void loop_() {
   switch (currentState) {
     case initial:
-      initialState();
+      initialStateLoop();
     break;
     case counting:
+      countingStateLoop();
     break;
     case pastLimit:
+      pastLimitStateLoop();
     break;
   }
 }
 
 void buttonChanged(int pin, int value) {
-  if (value == HIGH) {
-    switch (pin) {
-      case addButton:
-        tone(beeperPin, cSharp);
-        maxOccupants++;
-        break;
-      case subButton:
-        tone(beeperPin, fSharp);
-        maxOccupants--;
-        break;
-      case confirmButton:
-        break;
-    }
-  } else {
-    noTone(beeperPin);
+  switch (currentState) {
+    case initial:
+      initialStateButtonChanged(pin, value);
+    break;
+    case counting:
+      countingStateButtonChanged(pin, value);
+    break;
+    case pastLimit:
+      pastLimitStateButtonChanged(pin, value);
+    break;
   }
 }
 
 void timerExpired() {
-}
-
-void initialState() {
-  if (maxOccupants == 0) {
-    Serial.println("Enter max occupants");
-  } else {
-    Serial.print("Max occupants: ");
-    Serial.println(maxOccupants);
-  }
-}
-
-void countingState() {
-  int distance1 = getDistance(trigPin1, echoPin1);
-  int distance2 = getDistance(trigPin2, echoPin2);
-  // Prints the distance on the Serial Monitor
-  Serial.print("Distance 1: ");
-  Serial.println(distance1);
-  // Prints the distance on the Serial Monitor
-  Serial.print("Distance 2: ");
-  Serial.println(distance2);
-}
-
-void pastLimitState() {
 
 }
 

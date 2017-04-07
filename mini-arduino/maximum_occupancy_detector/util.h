@@ -1,1 +1,0 @@
-void beep(int beeperPin);
