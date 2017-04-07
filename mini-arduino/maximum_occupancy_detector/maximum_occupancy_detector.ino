@@ -12,6 +12,7 @@ const int trigPin2 = 9;
 const int echoPin2 = 8;
 
 const int beeperPin = 2;
+const int errorBeeperPin = 7;
 
 const int addButton = 3;
 const int subButton = 5;
@@ -28,6 +29,7 @@ void setup_() {
   pinMode(echoPin2, INPUT);
 
   pinMode(beeperPin, OUTPUT);
+  pinMode(errorBeeperPin, OUTPUT);
 
   buttonListen(addButton);
   buttonListen(subButton);

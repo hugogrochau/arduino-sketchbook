@@ -31,10 +31,6 @@ void initialStateButtonChanged(int pin, int value) {
 }
 
 void initialStateLoop() {
-  if (maxOccupants == 0) {
-  } else {
-
-  }
 }
 
 void printMaxOccupants() {
