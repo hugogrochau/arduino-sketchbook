@@ -6,5 +6,3 @@ void setup_();
 
 void loop_();
 
-void timerExpired();
-

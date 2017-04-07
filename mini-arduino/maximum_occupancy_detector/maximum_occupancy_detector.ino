@@ -22,10 +22,10 @@ state currentState = initial;
 int maxOccupants = 0;
 
 void setup_() {
-  pinMode(trigPin1, OUTPUT); 
+  pinMode(trigPin1, OUTPUT);
   pinMode(trigPin2, OUTPUT);
-  
-  pinMode(echoPin1, INPUT);  
+
+  pinMode(echoPin1, INPUT);
   pinMode(echoPin2, INPUT);
 
   pinMode(beeperPin, OUTPUT);
@@ -34,7 +34,7 @@ void setup_() {
   buttonListen(addButton);
   buttonListen(subButton);
   buttonListen(confirmButton);
-  
+
   Serial.begin(9600); // Starts the serial communication
 }
 
@@ -42,13 +42,13 @@ void loop_() {
   switch (currentState) {
     case initial:
       initialStateLoop();
-    break;
+      break;
     case counting:
       countingStateLoop();
-    break;
+      break;
     case pastLimit:
       pastLimitStateLoop();
-    break;
+      break;
   }
 }
 
@@ -56,17 +56,13 @@ void buttonChanged(int pin, int value) {
   switch (currentState) {
     case initial:
       initialStateButtonChanged(pin, value);
-    break;
+      break;
     case counting:
       countingStateButtonChanged(pin, value);
-    break;
+      break;
     case pastLimit:
       pastLimitStateButtonChanged(pin, value);
-    break;
+      break;
   }
-}
-
-void timerExpired() {
-
 }
 

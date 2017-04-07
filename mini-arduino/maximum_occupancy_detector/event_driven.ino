@@ -24,27 +24,26 @@ void setup () {
   for (int i = 0; i < 2; i++) {
     buttonStates[i] = LOW;
   }
-  
+
   // inicialização do usuário
-  setup_();                
+  setup_();
 }
 
 void loop () {
   unsigned long currentTime = millis();
   if (timerEnd && currentTime > timerEnd) {
     timerEnd = 0;
-    timerExpired();
   }
-  
+
   for (int i = 0; i < numButtons; i++) {
     int pin = buttonPins[i];
     int state = digitalRead(pin);
     if (state != buttonStates[i]) {
-       buttonChanged(pin, state);
-       buttonStates[i] = state;  
+      buttonChanged(pin, state);
+      buttonStates[i] = state;  
     }
   }
-  
+
   // loop do usuário
   loop_();
 }
