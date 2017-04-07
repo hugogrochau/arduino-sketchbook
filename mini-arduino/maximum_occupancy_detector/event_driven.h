@@ -1,8 +1,10 @@
-void sensorChanged(int sensor, int dis);
+void buttonChanged(int pin, int value);
 
-void sensorListen(int pin);
+void buttonListen(int pin);
 
-void init_();
+void setup_();
+
+void loop_();
 
 void timerExpired();
 
