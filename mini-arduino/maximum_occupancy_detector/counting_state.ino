@@ -5,6 +5,8 @@ const unsigned long triggerResetDelay = 1500;
 
 unsigned long lastTrigger = 0;
 
+bool debug = false;
+
 int currentOccupants = 0;
 int activeSensor = 0;
 
@@ -27,12 +29,13 @@ void countingStateLoop() {
     currentSample++;
     return;
   }
-  Serial.print("Distance 1 ");
-  Serial.println(distance1);
-  Serial.print("Distance 2 ");
-  Serial.println(distance2);
-  Serial.print("Distance to change ");
-  Serial.println(distanceToChange);
+
+  if (debug) {
+    Serial.print("Distance 1 ");
+    Serial.println(distance1);
+    Serial.print("Distance 2 ");
+    Serial.println(distance2);
+  }
 
   // Beep when over capacity
   if (currentOccupants > maxOccupants) {
@@ -71,7 +74,15 @@ void countingStateButtonChanged(int pin, int value) {
           noTone(beeperPin);
         }
         break;
+      case confirmButton:
+        tone(beeperPin, NOTE_C);
+        delay(200);
+        noTone(beeperPin);
+        debug = !debug;
+        break;
     }
+    Serial.print("Distance to change ");
+    Serial.println(distanceToChange);
   }
 }
 
@@ -88,15 +99,20 @@ void personPassed(int count) {
 }
 
 void sensorChanged(int sensor) {
-  Serial.print("Sensor changed ");
-  Serial.println(sensor);
+  if (debug) {
+    Serial.print("Sensor changed ");
+    Serial.println(sensor);
+  }
+
   if (shouldReset()) {
-    Serial.println("Trigger reset");
+    if (debug) Serial.println("Trigger reset");
     activeSensor = 0;
   }
   if (activeSensor != sensor) {
-    Serial.print("Sensor triggered ");
-    Serial.println(sensor);
+    if (debug) {
+      Serial.print("Sensor triggered ");
+      Serial.println(sensor);
+    }
     lastTrigger = millis();
     if (activeSensor == 0) {
       activeSensor = sensor;
