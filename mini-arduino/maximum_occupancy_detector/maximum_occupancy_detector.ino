@@ -7,14 +7,14 @@
 const int trigPin1 = 12;
 const int echoPin1 = 11;
 
-const int trigPin2 = 9;
-const int echoPin2 = 8;
+const int trigPin2 = 3;
+const int echoPin2 = 4;
 
 const int beeperPin = 2;
 const int errorBeeperPin = 7;
 
-const int addButton = 3;
-const int subButton = 5;
+const int addButton = 9;
+const int subButton = 10;
 const int confirmButton = 6;
 
 state currentState = initial;
