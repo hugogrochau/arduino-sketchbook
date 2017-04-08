@@ -5,7 +5,6 @@
 enum state {
   initial,
   counting,
-  pastLimit
 };
 
 #endif

@@ -3,7 +3,6 @@
 #include "event_driven.h"
 #include "initial_state.h"
 #include "counting_state.h"
-#include "past_limit_state.h"
 
 const int trigPin1 = 12;
 const int echoPin1 = 11;
@@ -46,9 +45,6 @@ void loop_() {
     case counting:
       countingStateLoop();
       break;
-    case pastLimit:
-      pastLimitStateLoop();
-      break;
   }
 }
 
@@ -59,9 +55,6 @@ void buttonChanged(int pin, int value) {
       break;
     case counting:
       countingStateButtonChanged(pin, value);
-      break;
-    case pastLimit:
-      pastLimitStateButtonChanged(pin, value);
       break;
   }
 }
