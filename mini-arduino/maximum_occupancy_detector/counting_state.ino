@@ -2,7 +2,6 @@
 #include "notes.h"
 
 const unsigned long triggerResetDelay = 1500;
-const int distanceToChange = 10;
 
 unsigned long lastTrigger = 0;
 
@@ -16,6 +15,7 @@ int numSamples = 5;
 int currentSample = 0;
 int distance1 = 0;
 int distance2 = 0;
+int distanceToChange = 10;
 
 void countingStateLoop() {
   int sampleDistance1 = getDistance(trigPin1, echoPin1);
@@ -31,6 +31,8 @@ void countingStateLoop() {
   Serial.println(distance1);
   Serial.print("Distance 2 ");
   Serial.println(distance2);
+  Serial.print("Distance to change ");
+  Serial.println(distanceToChange);
 
   // Beep when over capacity
   if (currentOccupants > maxOccupants) {
@@ -53,7 +55,24 @@ void countingStateLoop() {
 }
 
 void countingStateButtonChanged(int pin, int value) {
-  
+    if (value == HIGH) {
+    switch (pin) {
+      case addButton:
+        distanceToChange += 5;
+        tone(beeperPin, NOTE_A);
+        delay(200);
+        noTone(beeperPin);
+        break;
+      case subButton:
+        if (distanceToChange > 10) {
+          distanceToChange -= 5;
+          tone(beeperPin, NOTE_G_SHARP);
+          delay(200);
+          noTone(beeperPin);
+        }
+        break;
+    }
+  }
 }
 
 void personPassed(int count) {
