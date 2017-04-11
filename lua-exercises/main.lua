@@ -21,7 +21,7 @@ end
 
 
 function love.load()
-  rect1 = retangulo(50, 200, 200, 150)
+  rects = { retangulo(50, 200, 200, 150), retangulo(200, 50, 200, 150) }
 end
 
 function naimagem(mx, my, x, y, w, h) 
@@ -29,9 +29,14 @@ function naimagem(mx, my, x, y, w, h)
 end
 
 function love.keypressed(key)
-  rect1.keypressed(key)
+  for i,rect in pairs(rects) do
+    rect.keypressed(key)
+  end
 end
 
 function love.draw()
-  rect1.draw()
+  for i,rect in pairs(rects) do
+    rect.draw()
+  end
 end
+
