@@ -1,7 +1,9 @@
 #include "event_driven.h"
 #include "TimerService.h"
+#include "Scheduler.h"
 
 TimerService myTimer; // Timer object
+Scheduler taskCtl; // Scheduler object
 
 // “pin” passado deve gerar notificações
 char button_states[2];
@@ -36,8 +38,12 @@ void button_listen(int pin) {
   num_buttons++;
 }
 
+void timer_callback() {
+  taskCtl.post(0, timer_expired);
+}
+
 void timer_set(int ms) {
-  myTimer.set(0, ms/1000.0, timer_expired);
+  myTimer.set(0, ms/1000.0, timer_callback);
 }
 
 /* Programa principal: */
@@ -45,7 +51,6 @@ void timer_set(int ms) {
 void setup() {
   Serial.begin(9600);
   myTimer.init();
-  sei();
   
   for (int i = 0; i < 2; i++) {
     button_states[i] = LOW;
@@ -55,5 +60,7 @@ void setup() {
   init_();
 }
 
-void loop() { }
+void loop() { 
+  taskCtl.loop();
+}
 
