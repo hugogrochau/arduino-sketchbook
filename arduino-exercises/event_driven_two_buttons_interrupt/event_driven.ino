@@ -1,19 +1,13 @@
 #include "event_driven.h"
+#include "TimerService.h"
+
+TimerService myTimer; // Timer object
 
 // “pin” passado deve gerar notificações
 char button_states[2];
 int button_pins[2];
 int num_buttons = 0;
 
-void button_listen(int pin) {
-  pinMode(pin, INPUT);
-  pciSetup(pin);
-  button_pins[num_buttons] = pin;
-  num_buttons++;
-}
-
-// timer deve expirar após “ms” milisegundos
-unsigned long timer_end = 0;
 
 void pciSetup(byte pin) {
   // enable pin
@@ -24,8 +18,7 @@ void pciSetup(byte pin) {
   PCICR  |= bit (digitalPinToPCICRbit(pin)); 
 }
 
-ISR(PCINT1_vect) {
-  
+ISR(PCINT1_vect) {  
   for (int i = 0; i < num_buttons; i++) {
     int pin = button_pins[i];
     int state = digitalRead(pin);
@@ -36,16 +29,24 @@ ISR(PCINT1_vect) {
   }
 }
 
+void button_listen(int pin) {
+  pinMode(pin, INPUT);
+  pciSetup(pin);
+  button_pins[num_buttons] = pin;
+  num_buttons++;
+}
+
 void timer_set(int ms) {
-  timer_end = millis() + ms;
+  myTimer.set(0, ms/1000.0, timer_expired);
 }
 
 /* Programa principal: */
 // inicialização da API
 void setup() {
   Serial.begin(9600);
+  myTimer.init();
   sei();
-    
+  
   for (int i = 0; i < 2; i++) {
     button_states[i] = LOW;
   }
@@ -54,12 +55,5 @@ void setup() {
   init_();
 }
 
-void loop() {
-
-  unsigned long current_time = millis();
-  if (timer_end && current_time > timer_end) {
-    timer_end = 0;
-    timer_expired();
-  }
-}
+void loop() { }
 
