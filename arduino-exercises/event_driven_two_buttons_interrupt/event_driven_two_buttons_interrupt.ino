@@ -23,17 +23,18 @@ int button1On = 0;
 int button2On = 0;
 int currentStatus = LOW;
 
-void button_changed(int pin, int v) {
-  Serial.print("button changed");
-  Serial.println(pin);
-  if (pin == button1Pin && v == HIGH) {
-    button1On = !button1On;
-    if (speed > 1) speed--;
-  } else if (pin == button2Pin && v == HIGH) {
-    button2On = !button2On;
-    speed++;
-  }
+void button1Changed() {
+  Serial.print("button 1 changed");
+  button1On = !button1On;
+  speed++;
 }
+
+void button2Changed() {
+  Serial.print("button 2 changed");
+  button2On = !button2On;
+  if (speed > 1) speed--;
+}
+
 
 void init_() {
     /* LED pins */
@@ -47,8 +48,8 @@ void init_() {
   pinMode(CLK_DIO, OUTPUT);
   pinMode(DATA_DIO, OUTPUT);
 
-  button_listen(A1);
-  button_listen(A2);
+  button_listen(A1, button1Changed);
+  button_listen(A2, button2Changed);
 
   timer_set(500);
 }

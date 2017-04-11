@@ -1,4 +1,6 @@
-void button_changed(int pin, int v);
+typedef void (*edCallback)(void);
+
+void button_listen(int pin, edCallback callback);
 
 void init_();
 

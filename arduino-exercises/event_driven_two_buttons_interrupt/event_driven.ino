@@ -8,6 +8,7 @@ Scheduler taskCtl; // Scheduler object
 // “pin” passado deve gerar notificações
 char button_states[2];
 int button_pins[2];
+edCallback button_callbacks[2];
 int num_buttons = 0;
 
 
@@ -25,16 +26,17 @@ ISR(PCINT1_vect) {
     int pin = button_pins[i];
     int state = digitalRead(pin);
     if (state != button_states[i]) {
-       button_changed(pin, state);
-       button_states[i] = state;  
+      taskCtl.post(i + 1, button_callbacks[i]);
+      button_states[i] = state;  
     }
   }
 }
 
-void button_listen(int pin) {
+void button_listen(int pin, edCallback callback) {
   pinMode(pin, INPUT);
   pciSetup(pin);
   button_pins[num_buttons] = pin;
+  button_callbacks[num_buttons] = callback;
   num_buttons++;
 }
 
