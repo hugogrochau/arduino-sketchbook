@@ -1,10 +1,15 @@
 function newblip (vel)
   local x, y = 0, 0
+  local width, height = love.graphics.getDimensions( )
+  local wakeTime = false 
   return {
-    update = coroutine.wrap ( function (self)
+    update = coroutine.wrap ( function ()
       while true do
-        local width, height = love.graphics.getDimensions( )
-        x = x+vel
+        if not wakeTime then
+          x = x+vel
+        elseif wakeTime < os.time() then
+          x = x+vel
+        end
         if x > width then
         -- volta à esquerda da janela
           x = 0
@@ -22,6 +27,9 @@ function newblip (vel)
     end,
     draw = function ()
       love.graphics.rectangle("line", x, y, 10, 10)
+    end,
+    wait = function (seconds)
+      wakeTime = os.time() + seconds
     end
   }
 end
@@ -51,7 +59,8 @@ function love.keypressed(key)
     for i in ipairs(listabls) do
       local hit = listabls[i].affected(pos)
       if hit then
-        table.remove(listabls, i) -- esse blip "morre" 
+        listabls[i].wait(3)
+        -- table.remove(listabls, i) -- esse blip "morre" 
         return -- assumo que só vai pegar um blip
       end
     end
