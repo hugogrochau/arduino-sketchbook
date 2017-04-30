@@ -8,7 +8,7 @@ enemies = {}
 function love.load()
   local width, height = love.graphics.getDimensions()
   player = newPlayer(width / 2, height - 50, width, height)
-  local enemy = newEnemy(0, 0)
+  local enemy = newEnemy(1, 1, width)
   table.insert(enemies, enemy) 
 end
 
