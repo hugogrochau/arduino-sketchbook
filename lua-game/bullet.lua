@@ -1,8 +1,5 @@
 local bullet = function (initialX, initialY)
-  local width, height = love.graphics.getDimensions()
-  local x = initialX
-  local y = initialY 
-  local vel = 10 
+  local x, y, width, height, vel = initialX, initialY, 20, 20, 10 
   return {
     update = coroutine.wrap ( function ()
       while true do
@@ -11,7 +8,9 @@ local bullet = function (initialX, initialY)
       end
     end),
     draw = function ()
+      love.graphics.setColor(0, 255, 255)
       love.graphics.rectangle("line", x, y, 5, 20)
+      love.graphics.setColor(0, 0, 0)
     end,
     shouldDispose = function ()
       return y < 0
