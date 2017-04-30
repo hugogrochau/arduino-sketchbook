@@ -4,12 +4,6 @@ player = {}
 bullets = {}
 
 function love.keypressed(key)
-  if key == 'right' then
-    player.move(10, 0)
-  end
-  if key == 'left' then
-    player.move(-10, 0)
-  end
   if key == 'space' then
     local x, y = player.getCoords()
     local bullet = newBullet(x, y)
@@ -30,6 +24,12 @@ function love.draw()
 end
 
 function love.update(dt)
+  if love.keyboard.isDown('right') then
+    player.move(10, 0)
+  end
+  if love.keyboard.isDown('left') then
+    player.move(-10, 0)
+  end
   for i, bullet in pairs(bullets) do
     if bullet.shouldDispose() then
       table.remove(bullets, i)
