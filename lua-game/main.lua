@@ -1,7 +1,16 @@
-newPlayer = require("player")
-newBullet = require("bullet")
+newPlayer = require('player')
+newBullet = require('bullet')
+newEnemy = require('enemy')
 player = {} 
 bullets = {}
+enemies = {}
+
+function love.load()
+  local width, height = love.graphics.getDimensions()
+  player = newPlayer(width / 2, height - 50)
+  local enemy = newEnemy(0, 0)
+  table.insert(enemies, enemy) 
+end
 
 function love.keypressed(key)
   if key == 'space' then
@@ -11,30 +20,28 @@ function love.keypressed(key)
   end
 end
 
-function love.load()
-  width, height = love.graphics.getDimensions()
-  player = newPlayer(width / 2, height - 50)
-end
-
-function love.draw()
-  player.draw()
-  for i = 1,#bullets do
-    bullets[i].draw()
-  end
-end
-
 function love.update(dt)
+  -- keyboard events
   if love.keyboard.isDown('right') then
     player.move(10, 0)
   end
   if love.keyboard.isDown('left') then
     player.move(-10, 0)
   end
-  for i, bullet in pairs(bullets) do
-    if bullet.shouldDispose() then
-      table.remove(bullets, i)
-    else
-      bullet.update()
+
+  local entityTypes = {bullets, enemies}
+  for _, types in pairs(entityTypes) do
+    for _, entity in pairs(types) do
+      entity.update()
+    end
+  end
+end
+
+function love.draw()
+  local entityTypes = {{player}, bullets, enemies}
+  for _, types in pairs(entityTypes) do
+    for _, entity in pairs(types) do
+      entity.draw()
     end
   end
 end
