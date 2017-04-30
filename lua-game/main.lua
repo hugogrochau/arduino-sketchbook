@@ -11,7 +11,8 @@ function love.keypressed(key)
     player.move(-10, 0)
   end
   if key == 'space' then
-    local bullet = newBullet(player.x, player.y)
+    local x, y = player.getCoords()
+    local bullet = newBullet(x, y)
     table.insert(bullets, bullet)
   end
 end
@@ -29,8 +30,12 @@ function love.draw()
 end
 
 function love.update(dt)
-  for i = 1,#bullets do
-    bullets[i].update()
+  for i, bullet in pairs(bullets) do
+    if bullet.shouldDispose() then
+      table.remove(bullets, i)
+    else
+      bullet.update()
+    end
   end
 end
   

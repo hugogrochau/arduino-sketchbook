@@ -1,6 +1,6 @@
 local player = function (initialX, initialY)
   local x = initialX
-  local y = initialY 
+  local y = initialY
   return {
     draw = function ()
       love.graphics.rectangle("line", x, y, 20, 20)
@@ -8,8 +8,9 @@ local player = function (initialX, initialY)
     move = function(dx)
       x = x + dx
     end,
-    x=x,
-    y=y
+    getCoords = function()
+      return x, y
+    end
   }
 end
 
