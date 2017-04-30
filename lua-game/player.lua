@@ -11,7 +11,7 @@ local player = function (initialX, initialY, windowWidth, windowHeight)
       love.graphics.setColor(0, 0, 0)
     end,
     move = function(dx)
-      if utils.checkCollision(x + dx, y, width, height, 0, 0, windowWidth, windowHeight) then
+      if utils.checkCollision({x + dx, y, width, height}, {0, 0, windowWidth, windowHeight}) then
         x = x + dx
       end
     end,

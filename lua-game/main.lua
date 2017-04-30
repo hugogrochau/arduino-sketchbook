@@ -1,6 +1,7 @@
 newPlayer = require('player')
 newBullet = require('bullet')
 newEnemy = require('enemy')
+utils = require('utils')
 player = {} 
 bullets = {}
 enemies = {}
@@ -29,6 +30,8 @@ function love.update(dt)
     player.move(-10, 0)
   end
 
+  doBulletCollisions()
+
   local entityTypes = {bullets, enemies}
   for _, types in pairs(entityTypes) do
     for _, entity in pairs(types) do
@@ -45,4 +48,16 @@ function love.draw()
     end
   end
 end
+
+function doBulletCollisions()
+  for _, bullet in pairs(bullets) do
+    local bulletBox = bullet.getBox()
+    for i, enemy in pairs(enemies) do
+      if utils.checkCollision(bulletBox, enemy.getBox()) then
+        table.remove(enemies, i)
+      end
+    end
+  end
+end
+
   

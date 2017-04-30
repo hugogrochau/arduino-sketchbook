@@ -1,4 +1,3 @@
-utils = require('utils') 
 local NUM_ROWS = 30
 
 local enemy = function (initialRow, initialColumn, windowWidth)
@@ -23,6 +22,9 @@ local enemy = function (initialRow, initialColumn, windowWidth)
         row = row + direction
       end
     end,
+    getBox = function()
+      return {row * width, column * height, width, height}
+    end
   }
 end
 
