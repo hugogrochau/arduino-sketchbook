@@ -1,5 +1,9 @@
-local player = function (initialX, initialY)
-  local x, y, width, height = initialX, initialY, 20, 20
+utils = require('utils') 
+
+local player = function (initialX, initialY, windowWidth, windowHeight)
+  local x, y = initialX, initialY
+  local width, height = 20, 20
+  local windowWidth, windowHeight = windowWidth, windowHeight
   return {
     draw = function ()
       love.graphics.setColor(0, 255, 0)
@@ -7,7 +11,9 @@ local player = function (initialX, initialY)
       love.graphics.setColor(0, 0, 0)
     end,
     move = function(dx)
-      x = x + dx
+      if utils.checkCollision(x + dx, y, width, height, 0, 0, windowWidth, windowHeight) then
+        x = x + dx
+      end
     end,
     getCoords = function()
       return x, y
