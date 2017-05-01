@@ -8,14 +8,12 @@ bullets = {}
 enemies = {}
 
 function love.load()
-  local width, height = love.graphics.getDimensions()
-  player = newPlayer(width / 2, height - 50, width, height)
   loadLevel(level1)
 end
 
 function love.keypressed(key)
   if key == 'space' then
-    local x, y = player.getCoords()
+    local x, y, _, _ = unpack(player.getBox())
     local bullet = newBullet(x, y)
     table.insert(bullets, bullet)
   end
@@ -30,7 +28,7 @@ function love.update(dt)
     player.move(-10, 0)
   end
 
-  detectBulletCollisions()
+  detectCollisions()
 
   local entityTypes = {bullets, enemies}
   for _, types in pairs(entityTypes) do
@@ -50,7 +48,10 @@ function love.draw()
 end
 
 function loadLevel(level)
-  local width, _ = love.graphics.getDimensions()
+  local width, height = love.graphics.getDimensions()
+  enemies = {}
+  bullets = {}
+  player = newPlayer(width / 2, height - 50, width, height)
   for i, column in pairs(level.enemies) do
     for j, hasEnemy in pairs(column) do
       if hasEnemy == 1 then
@@ -61,14 +62,18 @@ function loadLevel(level)
   end
 end
 
-function detectBulletCollisions()
-  for i, bullet in pairs(bullets) do
-    local bulletBox = bullet.getBox()
-    for j, enemy in pairs(enemies) do
-      if utils.checkCollision(bulletBox, enemy.getBox()) then
-        table.remove(bullets, i)
-        table.remove(enemies, j)
+function detectCollisions()
+  local width, height = love.graphics.getDimensions()
+  for i, enemy in pairs(enemies) do
+    local enemyBox = enemy.getBox()
+    for j, bullet in pairs(bullets) do
+      if utils.checkCollision(enemyBox, bullet.getBox()) then
+        table.remove(enemies, i)
+        table.remove(bullets, j)
       end
+    end
+    if enemyBox[2] > height - 50 then
+      loadLevel(level1)
     end
   end
 end

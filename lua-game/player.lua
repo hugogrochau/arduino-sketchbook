@@ -15,8 +15,8 @@ local player = function (initialX, initialY, windowWidth, windowHeight)
         x = x + dx
       end
     end,
-    getCoords = function()
-      return x, y
+    getBox = function()
+      return {x, y, width, height}
     end
   }
 end
