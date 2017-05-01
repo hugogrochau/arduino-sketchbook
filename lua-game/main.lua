@@ -6,6 +6,8 @@ level1 = require('levels/1')
 player = {} 
 bullets = {}
 enemies = {}
+speed = 1
+local width, height = love.graphics.getDimensions()
 
 function love.load()
   loadLevel(level1)
@@ -30,6 +32,11 @@ function love.update(dt)
 
   detectCollisions()
 
+  if #enemies == 0 then
+    speed = speed + 5 
+    loadLevel(level1)
+  end
+
   local entityTypes = {bullets, enemies}
   for _, types in pairs(entityTypes) do
     for _, entity in pairs(types) do
@@ -48,14 +55,13 @@ function love.draw()
 end
 
 function loadLevel(level)
-  local width, height = love.graphics.getDimensions()
-  enemies = {}
-  bullets = {}
   player = newPlayer(width / 2, height - 50, width, height)
-  for i, column in pairs(level.enemies) do
+  bullets = {}
+  enemies = {}
+  for i, column in pairs(level) do
     for j, hasEnemy in pairs(column) do
       if hasEnemy == 1 then
-        local enemy = newEnemy(j, i, level.speed, width)
+        local enemy = newEnemy(j, i, speed, width)
         table.insert(enemies, enemy)
       end
     end
@@ -63,7 +69,6 @@ function loadLevel(level)
 end
 
 function detectCollisions()
-  local width, height = love.graphics.getDimensions()
   for i, enemy in pairs(enemies) do
     local enemyBox = enemy.getBox()
     for j, bullet in pairs(bullets) do
@@ -72,7 +77,9 @@ function detectCollisions()
         table.remove(bullets, j)
       end
     end
-    if enemyBox[2] > height - 50 then
+    -- enemy touched player
+    if enemyBox[2] > height - 70 then
+      speed = 1
       loadLevel(level1)
     end
   end

@@ -2,7 +2,7 @@ local NUM_ROWS = 30
 
 local enemy = function (initialRow, initialColumn, speed, windowWidth)
   local row, column = initialRow, initialColumn
-  local timeBetweenUpdates = 0.001 / speed
+  local timeBetweenUpdates = 0.01 / speed
   local width, height = 20, 20
   local numRows = windowWidth / width
   local direction = 1

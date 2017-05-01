@@ -1,5 +1,5 @@
 local bullet = function (initialX, initialY)
-  local x, y, width, height, vel = initialX, initialY, 5, 20, 10 
+  local x, y, width, height, vel = initialX, initialY, 10, 30, 10 
   return {
     update = coroutine.wrap ( function ()
       while true do
