@@ -2,6 +2,7 @@ newPlayer = require('player')
 newBullet = require('bullet')
 newEnemy = require('enemy')
 utils = require('utils')
+level1 = require('levels/1')
 player = {} 
 bullets = {}
 enemies = {}
@@ -9,8 +10,7 @@ enemies = {}
 function love.load()
   local width, height = love.graphics.getDimensions()
   player = newPlayer(width / 2, height - 50, width, height)
-  local enemy = newEnemy(1, 1, width)
-  table.insert(enemies, enemy) 
+  loadLevel(level1)
 end
 
 function love.keypressed(key)
@@ -30,7 +30,7 @@ function love.update(dt)
     player.move(-10, 0)
   end
 
-  doBulletCollisions()
+  detectBulletCollisions()
 
   local entityTypes = {bullets, enemies}
   for _, types in pairs(entityTypes) do
@@ -49,12 +49,25 @@ function love.draw()
   end
 end
 
-function doBulletCollisions()
-  for _, bullet in pairs(bullets) do
+function loadLevel(level)
+  local width, _ = love.graphics.getDimensions()
+  for i, column in pairs(level.enemies) do
+    for j, hasEnemy in pairs(column) do
+      if hasEnemy == 1 then
+        local enemy = newEnemy(j, i, width)
+        table.insert(enemies, enemy)
+      end
+    end
+  end
+end
+
+function detectBulletCollisions()
+  for i, bullet in pairs(bullets) do
     local bulletBox = bullet.getBox()
-    for i, enemy in pairs(enemies) do
+    for j, enemy in pairs(enemies) do
       if utils.checkCollision(bulletBox, enemy.getBox()) then
-        table.remove(enemies, i)
+        table.remove(bullets, i)
+        table.remove(enemies, j)
       end
     end
   end
