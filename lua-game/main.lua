@@ -54,7 +54,7 @@ function loadLevel(level)
   for i, column in pairs(level.enemies) do
     for j, hasEnemy in pairs(column) do
       if hasEnemy == 1 then
-        local enemy = newEnemy(j, i, width)
+        local enemy = newEnemy(j, i, level.speed, width)
         table.insert(enemies, enemy)
       end
     end
