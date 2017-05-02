@@ -1,19 +1,28 @@
 local newLed = function (port)
   local port = port
-  local led={}
-  led[0]="OFF"
-  led[1]="ON_"
+  local on = false
+  local timer = tmr.create()
+  local blinking = false
+
   gpio.mode(port, gpio.OUTPUT)
   gpio.write(port, gpio.LOW);
+
   return {
-    turnOn = function()
-      gpio.write(port, gpio.HIGH)
+    startBlinking = function()
+      blinking = true
+      callback = function()
+        state = on and gpio.HIGH or gpio.LOW
+        gpio.write(port, state)
+        on = not on
+      end
+      timer:register(500, tmr.ALARM_AUTO, callback)
     end,
-    turnOff = function()
-      gpio.write(port, gpio.LOW)
+    stopBlinking = function()
+      blinking = false
+      timer:unregister()
     end,
     getState = function()
-      return led[gpio.read(port)]
+      return blinking and "ON_" or "OFF"
     end
   }
 end
@@ -49,10 +58,10 @@ end
 
 local actions = {
   LERTEMP = readtemp,
-  LIGA1 = leds[1].turnOn,
-  DESLIGA1 = leds[1].turnOff,
-  LIGA2 = leds[2].turnOn,
-  DESLIGA2 = leds[2].turnOff,
+  LIGA1 = leds[1].startBlinking,
+  DESLIGA1 = leds[1].stopBlinking,
+  LIGA2 = leds[2].startBlinking,
+  DESLIGA2 = leds[2].stopBlinking,
 }
 
 srv = net.createServer(net.TCP)
