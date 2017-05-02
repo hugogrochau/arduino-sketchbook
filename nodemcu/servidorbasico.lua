@@ -1,19 +1,35 @@
+local newLed = function (port)
+  local port = port
+  local led={}
+  led[0]="OFF"
+  led[1]="ON_"
+  gpio.mode(port, gpio.OUTPUT)
+  gpio.write(port, gpio.LOW);
+  return {
+    turnOn = function()
+      gpio.write(port, gpio.HIGH)
+    end,
+    turnOff = function()
+      gpio.write(port, gpio.LOW)
+    end,
+    getState = function()
+      return led[gpio.read(port)]
+    end
+  }
+end
+
 led1 = 3
 led2 = 6
 sw1 = 1
 sw2 = 2
 
-gpio.mode(led1, gpio.OUTPUT)
-gpio.mode(led2, gpio.OUTPUT)
+local leds = {}
+leds[1] = newLed(led1)
+leds[2] = newLed(led2)
+
 gpio.mode(sw1, gpio.INPUT)
 gpio.mode(sw2, gpio.INPUT)
 
-gpio.write(led1, gpio.LOW);
-gpio.write(led2, gpio.LOW);
-
-local led={}
-led[0]="OFF"
-led[1]="ON_"
 
 local sw={}
 sw[1]="OFF"
@@ -23,8 +39,8 @@ local lasttemp = 0
 
 local function willwrite (led, s)
   return function () 
-           gpio.write(led, s) 
-         end
+    gpio.write(led, s) 
+  end
 end
 
 local function readtemp()
@@ -33,10 +49,10 @@ end
 
 local actions = {
   LERTEMP = readtemp,
-  LIGA1 = willwrite(led1, gpio.HIGH),
-  DESLIGA1 = willwrite(led1, gpio.LOW),
-  LIGA2 = willwrite(led2, gpio.HIGH),
-  DESLIGA2 = willwrite(led2, gpio.LOW),
+  LIGA1 = leds[1].turnOn,
+  DESLIGA1 = leds[1].turnOff,
+  LIGA2 = leds[2].turnOn,
+  DESLIGA2 = leds[2].turnOff,
 }
 
 srv = net.createServer(net.TCP)
@@ -67,18 +83,35 @@ function receiver(sck, request)
     TEMP =  string.format("%2.1f", lasttemp),
     CHV1 = gpio.LOW,
     CHV2 = gpio.LOW,
-    LED1 = led[gpio.read(led1)],
-    LED2 = led[gpio.read(led2)],
+    LED1 = leds[1].getState(),
+    LED2 = leds[2].getState(),
   }
 
   local buf = [[
-<h1><u>PUC Rio - Sistemas Reativos</u></h1>
-<h2><i>ESP8266 Web Server</i></h2>
-        <p>Temperatura: $TEMP oC <a href="?pin=LERTEMP"><button><b>REFRESH</b></button></a>
-        <p>LED 1: $LED1  :  <a href="?pin=LIGA1"><button><b>ON</b></button></a>
-                            <a href="?pin=DESLIGA1"><button><b>OFF</b></button></a></p>
-        <p>LED 2: $LED2  :  <a href="?pin=LIGA2"><button><b>ON</b></button></a>
-                            <a href="?pin=DESLIGA2"><button><b>OFF</b></button></a></p>
+<head>
+<style>
+    body {
+        font-size: 60px;
+    }
+    button {
+        width: 200px;
+        height: 100px;
+    }
+</style>
+</head>
+<body>
+    <h1><u>PUC Rio - Sistemas Reativos</u></h1>
+    <h2><i>ESP8266 Web Server</i></h2>
+    <p>Temperatura: $TEMP oC <a href="?pin=LERTEMP"><button><b>REFRESH</b></button></a>
+    <p>LED 1: $LED1  :  
+        <a href="?pin=LIGA1"><button><b>ON</b></button></a>
+        <a href="?pin=DESLIGA1"><button><b>OFF</b></button></a>
+    </p>
+    <p>LED 2: $LED2  :  
+        <a href="?pin=LIGA2"><button><b>ON</b></button></a>
+        <a href="?pin=DESLIGA2"><button><b>OFF</b></button></a>
+    </p>
+</body>
 ]]
 
   buf = string.gsub(buf, "$(%w+)", vals)
