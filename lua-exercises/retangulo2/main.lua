@@ -1,15 +1,13 @@
+local timeSinceStart = 0
+local width, height = love.graphics.getDimensions( )
+
 function newblip (vel)
   local x, y = 0, 0
-  local width, height = love.graphics.getDimensions( )
-  local wakeTime = false 
   return {
-    update = coroutine.wrap ( function ()
+    wakeTime = 0, 
+    update = coroutine.wrap ( function (self, timeSinceStart)
       while true do
-        if not wakeTime then
-          x = x+vel
-        elseif wakeTime < os.time() then
-          x = x+vel
-        end
+        x = x+vel
         if x > width then
         -- volta à esquerda da janela
           x = 0
@@ -28,15 +26,14 @@ function newblip (vel)
     draw = function ()
       love.graphics.rectangle("line", x, y, 10, 10)
     end,
-    wait = function (seconds)
-      wakeTime = os.time() + seconds
+    wait = function (self, time)
+      self.wakeTime = timeSinceStart + time
     end
   }
 end
 
 function newplayer ()
   local x, y = 0, 200
-  local width, height = love.graphics.getDimensions( )
   return {
   try = function ()
     return x
@@ -59,9 +56,8 @@ function love.keypressed(key)
     for i in ipairs(listabls) do
       local hit = listabls[i].affected(pos)
       if hit then
-        listabls[i].wait(3)
-        -- table.remove(listabls, i) -- esse blip "morre" 
-        return -- assumo que só vai pegar um blip
+        listabls[i]:wait(3) -- faz o blip esperar por 3 segundos
+        return 
       end
     end
   end
@@ -83,9 +79,12 @@ function love.draw()
 end
 
 function love.update(dt)
+  timeSinceStart = timeSinceStart + dt
   player.update(dt)
   for i = 1,#listabls do
-    listabls[i].update()
+    if listabls[i].wakeTime <= timeSinceStart then
+      listabls[i]:update(timeSinceStart)
+    end
   end
 end
   
