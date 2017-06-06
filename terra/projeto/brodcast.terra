@@ -1,4 +1,6 @@
 #include "/home/terra/TerraNG/terra/TerraNet.defs"
+#define BROADCAST_TYPE 1
+#define DATA_TYPE 2
 
 var ushort nodeId = getNodeId();
 
@@ -11,11 +13,12 @@ end
 var usrMsg sndData;
 var usrMsg recData;
 var usrMsg data;
-var ushort count = 0
+
 
 sndData.source = nodeId;
-sndData.type = 2;
+sndData.type = BROADCAST_TYPE;
 sndData.target = BROADCAST;
+sndData.d16[2] = 0;
 
 if nodeId == 11 then
     emit SEND(sndData);
@@ -24,30 +27,33 @@ if nodeId == 11 then
 else
     recData = await RECEIVE;
     var ushort parent = recData.source;
+    sndData.d16[3] = recData.d16[3] + 1;
     emit SEND(sndData);
     await SEND_DONE;
     sndData.target = parent;
 end
 
+sndData.type = DATA_TYPE;
+
 par do
+    await (3 * sndData.d16[3])s;
     loop do
         emit REQ_TEMP();
         sndData.d16[0] = await TEMP;
         sndData.d16[1] = nodeId;
-        sndData.d16[2] = count;
+        sndData.d16[2] = sndData.d16[2] + 1;
 
         qPut(sndData);
 
-        count = count + 1
         emit LED0(TOGGLE);
-        await 5s;
+        await 18s;
     end
 with
     loop do
-        recData = await RECEIVE;
+        recData = await RECEIVE(DATA_TYPE);
         recData.target = sndData.target;
 
-        qPut(sndData);
+        qPut(recData);
 
         emit LED2(TOGGLE);
     end
@@ -57,8 +63,81 @@ with
             await Q_READY;
         else
             qGet(data);
-            emit SEND(data)
+            emit SEND(data);
             await SEND_DONE;
+			await 500ms;
+        end
+    end
+end
+#include "/home/terra/TerraNG/terra/TerraNet.defs"
+#define BROADCAST_TYPE 1
+#define DATA_TYPE 2
+
+var ushort nodeId = getNodeId();
+
+pktype usrMsg from radioMsg with
+    var ubyte[4]  d8;
+    var ushort[4] d16;
+    var ulong[2]  d32;
+end
+
+var usrMsg sndData;
+var usrMsg recData;
+var usrMsg data;
+
+
+sndData.source = nodeId;
+sndData.type = BROADCAST_TYPE;
+sndData.target = BROADCAST;
+sndData.d16[2] = 0;
+
+if nodeId == 11 then
+    emit SEND(sndData);
+    await SEND_DONE;
+    sndData.target = 1;
+else
+    recData = await RECEIVE;
+    var ushort parent = recData.source;
+    sndData.d16[3] = recData.d16[3] + 1;
+    emit SEND(sndData);
+    await SEND_DONE;
+    sndData.target = parent;
+end
+
+sndData.type = DATA_TYPE;
+
+par do
+    var ushort randNum = (rand() % 1000) + (1000 * sndData.d16[3])
+    await (randNum)s;
+    loop do
+        emit REQ_TEMP();
+        sndData.d16[0] = await TEMP;
+        sndData.d16[1] = nodeId;
+        sndData.d16[2] = sndData.d16[2] + 1;
+
+        qPut(sndData);
+
+        emit LED0(TOGGLE);
+        await 18s;
+    end
+with
+    loop do
+        recData = await RECEIVE(DATA_TYPE);
+        recData.target = sndData.target;
+
+        qPut(recData);
+
+        emit LED2(TOGGLE);
+    end
+with
+    loop do
+        if qSize() == 0 then
+            await Q_READY;
+        else
+            qGet(data);
+            emit SEND(data);
+            await SEND_DONE;
+			await 250ms;
         end
     end
 end
