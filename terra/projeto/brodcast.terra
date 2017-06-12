@@ -64,8 +64,8 @@ with
             await Q_READY;
         else
             qGet(data);
-            emit SEND(data);
-            await SEND_DONE;
+            emit SEND_ACK(data);
+            await SEND_DONE_ACK;
 			await 250ms;
         end
     end
