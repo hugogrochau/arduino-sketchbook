@@ -36,8 +36,8 @@ end
 sndData.type = DATA_TYPE;
 
 par do
-    var ushort randNum = (rand() % 1000) + (1000 * sndData.d16[3])
-    await (randNum)s;
+    var ushort randNum = (random() % 1000) + (1000 * sndData.d16[3]);
+    await (randNum)ms;
     loop do
         emit REQ_TEMP();
         sndData.d16[0] = await TEMP;
@@ -66,7 +66,7 @@ with
             qGet(data);
             emit SEND_ACK(data);
             await SEND_DONE_ACK;
-			await 250ms;
+            await 250ms;
         end
     end
 end
