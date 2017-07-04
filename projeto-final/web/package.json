@@ -1,0 +1,34 @@
+{
+  "name": "smart-room",
+  "description": "A platform for monitoring and controlling a smart room",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hugogrochau/smart-room.git"
+  },
+  "keywords": [
+    "nodemcu",
+    "mqtt",
+    "iot",
+    "smart",
+    "room"
+  ],
+  "homepage": "http://hugo.grochau.com/smart-room",
+  "author": "Hugo Grochau",
+  "license": "MIT",
+  "dependencies": {
+    "mqtt": "^2.7.2",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-icons": "^2.2.5"
+  },
+  "devDependencies": {
+    "react-scripts": "1.0.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}

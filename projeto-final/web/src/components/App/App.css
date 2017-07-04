@@ -1,0 +1,39 @@
+body {
+  color: rgba(0, 0, 0, 0.75);
+  line-height: 1.75;
+}
+
+.Controls {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+
+  width: 200px;
+  height: 400px;
+
+  border: 1px rgba(0, 0, 0, 0.75) solid;
+
+  padding: 20px;
+  margin-left: -800px;
+  margin-top: -200px;
+
+  z-index: 3;
+}
+
+.PersonAnimation-enter, .PersonAnimation-leave {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+
+  font-size: 150px;
+  margin-left: 300px;
+  margin-top: 10px;
+}
+
+.PersonAnimation-enter {
+  color: green;
+}
+
+.PersonAnimation-leave {
+  color: red;
+}

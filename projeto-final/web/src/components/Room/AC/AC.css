@@ -1,0 +1,23 @@
+.AC-on, .AC-off {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+
+  margin-left: -200px;
+  margin-top: -360px;
+
+  z-index: 3;
+
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.AC-on {
+  background-color: green;
+}
+
+.AC-off {
+  background-color: red;
+}
